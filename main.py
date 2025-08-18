@@ -1,21 +1,9 @@
 def main():
     print("Hello from deposito-caddeo!")
 
+    test = {"test": "test github actions"}
 
-    test ={}
-
-    test=test
-
-    test = {
-
-
-
-
-        "test":"test github actions"
-    }
-
-    print(test
-    )
+    print(test)
 
 
 if __name__ == "__main__":
