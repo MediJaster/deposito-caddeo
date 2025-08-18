@@ -35,6 +35,17 @@ def conta_parole(testo: str) -> dict[str, int]:
     return parole
 
 
+def top_5_parole(parole: dict[str, int]) -> list[tuple[str, int]]:
+    return sorted(parole.items(), key=lambda x: x[1], reverse=True)[:5]
+
+
+def genera_report(parole: dict[str, int]) -> str:
+    report = "Top 5 parole più frequenti:\n"
+    for parola, conteggio in top_5_parole(parole):
+        report += f"{parola}: {conteggio}\n"
+    return report
+
+
 def main() -> None:
     testo = leggi_file()
     testo_pulito = pulisci_testo(testo)
@@ -46,6 +57,9 @@ def main() -> None:
 
     print(f"\nNumero di righe: {numero_righe}")
     print(f"\nNumero di parole totale: {sum(parole.values())}")
+
+    report = genera_report(parole)
+    print(f"\n{report}")
 
     return
 
