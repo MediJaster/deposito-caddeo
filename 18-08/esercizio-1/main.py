@@ -13,7 +13,26 @@ def leggi_file() -> str:
 
 
 def pulisci_testo(testo: str) -> str:
-    return re.sub(r"[^a-zA-Z\d\s:]", "", testo)
+    testo = testo.lower()
+    testo = re.sub(r"[^a-zA-Z\d\s:]", "", testo)
+
+    return testo
+
+
+def conta_righe(testo: str) -> int:
+    return len(testo.splitlines())
+
+
+def conta_parole(testo: str) -> dict[str, int]:
+    parole: dict[str, int] = {}
+
+    for parola in testo.split():
+        parola = parola.strip()
+
+        if parola:
+            parole[parola] = parole.get(parola, 0) + 1
+
+    return parole
 
 
 def main() -> None:
@@ -21,6 +40,12 @@ def main() -> None:
     testo_pulito = pulisci_testo(testo)
 
     print("Contenuto originale di input.txt\n\n", testo)
+
+    numero_righe = conta_righe(testo_pulito)
+    parole = conta_parole(testo_pulito)
+
+    print(f"\nNumero di righe: {numero_righe}")
+    print(f"\nNumero di parole totale: {sum(parole.values())}")
 
     return
 
