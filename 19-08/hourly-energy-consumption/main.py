@@ -37,7 +37,14 @@ def get_dataset(company: str) -> pd.DataFrame:
 
 
 def main() -> None:
-    hourly_consumption_df = get_dataset("COMED")
+    print("Available companies:\n", "\n".join(COMPANY_LIST))
+
+    selected_company = (
+        input(f"Select a company from the list above (default: {COMPANY_LIST[0]}): ")
+        or COMPANY_LIST[0]
+    )
+
+    hourly_consumption_df = get_dataset(company=selected_company)
 
     print(hourly_consumption_df.head())
 
