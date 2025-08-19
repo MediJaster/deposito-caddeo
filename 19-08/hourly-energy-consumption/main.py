@@ -1,9 +1,10 @@
 import os
-from typing import Literal
 
 import pandas as pd
 
 DATASET_FOLDER = os.path.join(os.path.dirname(__file__), "datasets")
+RESULTS_FOLDER = os.path.join(os.path.dirname(__file__), "results")
+
 COMPANY_LIST = [
     entry.name.split("_")[0]
     for entry in os.scandir(DATASET_FOLDER)
@@ -41,9 +42,17 @@ def get_dataset(company: str) -> pd.DataFrame:
     return renamed_df
 
 
-def calculate_high_or_low_consumption(
-    df: pd.DataFrame, reference: Literal["daily", "weekly", "total"] = "total"
-) -> pd.DataFrame:
+def write_results_to_csv(df: pd.DataFrame, company: str, reference: str) -> None:
+    df.to_csv(
+        os.path.join(
+            RESULTS_FOLDER, f"{company}_{reference}_high_low_consumption_results.csv"
+        ),
+        index=True,
+        header=True,
+    )
+
+
+def calculate_high_or_low_consumption(df: pd.DataFrame, reference: str) -> pd.DataFrame:
     df = df.copy()
 
     match reference:
@@ -75,14 +84,20 @@ def main() -> None:
 
     hourly_consumption_df = get_dataset(company=selected_company)
 
-    processed_df = calculate_high_or_low_consumption(
-        df=hourly_consumption_df,
-        reference="daily",  # Change to "weekly" or "total" as needed
+    selected_reference = (
+        input("Select a reference for high/low consumption (daily, weekly, total): ")
+        or "total"
     )
 
-    print(processed_df.head())
+    processed_df = calculate_high_or_low_consumption(
+        df=hourly_consumption_df, reference=selected_reference
+    )
 
-    return
+    write_results_to_csv(
+        df=processed_df, company=selected_company, reference=selected_reference
+    )
+
+    print(f"Results for {selected_company} have been saved to the results folder.")
 
 
 if __name__ == "__main__":
