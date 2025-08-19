@@ -52,17 +52,23 @@ def write_results_to_csv(df: pd.DataFrame, company: str, reference: str) -> None
     )
 
 
+DAY_IN_HOURS = 24
+WEEK_IN_HOURS = DAY_IN_HOURS * 7
+
+
 def calculate_high_or_low_consumption(df: pd.DataFrame, reference: str) -> pd.DataFrame:
     df = df.copy()
 
     match reference:
         case "daily":
             df["High Consumption"] = (
-                df["Consumption"] > df["Consumption"].rolling(window=24).mean()
+                df["Consumption"]
+                > df["Consumption"].rolling(window=DAY_IN_HOURS).mean()
             )
         case "weekly":
             df["High Consumption"] = (
-                df["Consumption"] > df["Consumption"].rolling(window=(24 * 7)).mean()
+                df["Consumption"]
+                > df["Consumption"].rolling(window=WEEK_IN_HOURS).mean()
             )
         case "total":
             df["High Consumption"] = df["Consumption"] > df["Consumption"].mean()
