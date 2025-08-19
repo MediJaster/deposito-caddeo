@@ -1,4 +1,5 @@
 import os
+from typing import Literal
 
 import pandas as pd
 
@@ -29,11 +30,39 @@ def get_dataset(company: str) -> pd.DataFrame:
 
     filename = f"{company}_hourly.csv"
 
-    return pd.read_csv(
+    raw_df = pd.read_csv(
         os.path.join(DATASET_FOLDER, filename),
         parse_dates=["Datetime"],
         index_col="Datetime",
     )
+
+    renamed_df = raw_df.rename(columns={f"{company}_MW": "Consumption"})
+
+    return renamed_df
+
+
+def calculate_high_or_low_consumption(
+    df: pd.DataFrame, reference: Literal["daily", "weekly", "total"] = "total"
+) -> pd.DataFrame:
+    df = df.copy()
+
+    match reference:
+        case "daily":
+            df["High Consumption"] = (
+                df["Consumption"] > df["Consumption"].rolling(window=24).mean()
+            )
+        case "weekly":
+            df["High Consumption"] = (
+                df["Consumption"] > df["Consumption"].rolling(window=(24 * 7)).mean()
+            )
+        case "total":
+            df["High Consumption"] = df["Consumption"] > df["Consumption"].mean()
+        case _:
+            raise ValueError(
+                f"Invalid reference '{reference}'. Choose from 'daily', 'weekly', or 'total'."
+            )
+
+    return df
 
 
 def main() -> None:
@@ -46,7 +75,12 @@ def main() -> None:
 
     hourly_consumption_df = get_dataset(company=selected_company)
 
-    print(hourly_consumption_df.head())
+    processed_df = calculate_high_or_low_consumption(
+        df=hourly_consumption_df,
+        reference="daily",  # Change to "weekly" or "total" as needed
+    )
+
+    print(processed_df.head())
 
     return
 
