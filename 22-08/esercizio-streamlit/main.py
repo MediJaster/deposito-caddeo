@@ -7,7 +7,6 @@ A simple counter app using Streamlit.
 
 """
 
-
 if "count" not in st.session_state:
     st.session_state.count = 0
 
@@ -26,3 +25,12 @@ with col2:
 with col3:
     if st.button("Increment"):
         st.session_state.count += 1
+
+
+with st.sidebar:
+    username = st.text_input(
+        "Enter your name:",
+    )
+
+    if username:
+        st.write("Hello, ", username, "!")
