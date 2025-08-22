@@ -1,4 +1,3 @@
-from numpy import size
 import streamlit as st
 
 """
