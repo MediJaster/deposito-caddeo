@@ -1,0 +1,6 @@
+write_summary:
+    description: >
+        Write a summary of the web search results.
+    expected_output: >
+        A concise and informative paragraph summarizing the key points from the web search results.
+    agent: result_summarizer

@@ -1,0 +1,21 @@
+[project]
+name = "web_search_summary"
+version = "0.1.0"
+description = "web_search_summary using crewAI"
+authors = [{ name = "Your Name", email = "you@example.com" }]
+requires-python = ">=3.10,<3.14"
+dependencies = [
+    "crewai[tools]>=0.165.1,<1.0.0",
+]
+
+[project.scripts]
+kickoff = "web_search_summary.main:kickoff"
+run_crew = "web_search_summary.main:kickoff"
+plot = "web_search_summary.main:plot"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.crewai]
+type = "flow"
