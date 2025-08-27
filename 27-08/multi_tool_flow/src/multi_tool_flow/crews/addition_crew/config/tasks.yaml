@@ -1,0 +1,7 @@
+perform_addition:
+    description: >
+        Add the two numbers provided by the user.
+        {user_input}
+    expected_output: >
+        The sum of the two numbers.
+    agent: addition_calculator

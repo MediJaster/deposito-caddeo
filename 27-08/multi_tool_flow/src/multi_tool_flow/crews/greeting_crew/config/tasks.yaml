@@ -1,0 +1,13 @@
+tool_explanation_task:
+    description: >
+        Explain the functionalities of the tools available in the system.
+        If the user is not asking for any specific tool, leave the tool_name field blank and provide a brief explanation of all available tools in the explanation field.
+        This is what the user is asking for:
+        {user_input}
+    expected_output: >
+        A JSON object containing:
+        {
+            "tool_name": "<name_of_the_tool>",
+            "explanation": "<detailed_explanation_of_the_tool>"
+        }
+    agent: tool_explainer
