@@ -1,0 +1,13 @@
+search_web:
+    description: >
+        Perform a web search to gather information on a given topic.
+    expected_output: >
+        A list of relevant web search results including titles and URLs.
+    agent: web_search_and_summarizer
+
+write_summary:
+    description: >
+        Write a summary of the web search results.
+    expected_output: >
+        A concise and informative paragraph summarizing the key points from the web search results.
+    agent: web_search_and_summarizer

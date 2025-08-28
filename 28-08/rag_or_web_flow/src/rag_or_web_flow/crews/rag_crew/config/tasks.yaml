@@ -1,0 +1,15 @@
+rewrite_query_and_perform_search:
+    description: >
+        Rewrite the user's query to be more suitable for searching a vector database, then perform the search using the rewritten query.
+        User Query:
+        {user_input}
+    expected_output: >
+        A list of relevant documents or information retrieved from the vector database based on the rewritten query.
+    agent: researcher
+
+respond_to_query:
+    description: >
+        Respond to the user's query using the information retrieved from the vector database.
+    expected_output: >
+        A comprehensive and accurate answer to the user's query, based on the retrieved information.
+    agent: researcher
