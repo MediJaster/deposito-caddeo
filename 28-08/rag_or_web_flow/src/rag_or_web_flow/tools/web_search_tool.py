@@ -18,7 +18,43 @@ class WebSearchTool(BaseTool):
     args_schema: Type[BaseModel] = WebSearchToolInput
 
     def _run(self, search_query: str) -> str:
-        """Use the tool synchronously."""
+        """
+        Esegue una ricerca web con DuckDuckGo e restituisce un elenco formattato di risultati.
+
+        Parameters
+        ----------
+        search_query : str
+            Query di ricerca. Unità: adimensionale. Range: stringa non vuota.
+
+        Returns
+        -------
+        str
+            Stringa con 0–3 risultati, uno per riga, nel formato "- {title}: {href}".
+            Unità: adimensionale.
+
+        Raises
+        ------
+        ValueError
+            Se `search_query` è vuota o composta solo da spazi.
+        RuntimeError
+            Eventuali errori di rete o della libreria sottostante possono propagare.
+
+        Notes
+        -----
+        Complessità temporale: O(n) nel numero di risultati richiesti (qui n ≤ 3).
+        Complessità spaziale: O(n).
+
+        Examples
+        --------
+        >>> from rag_or_web_flow.tools.web_search_tool import WebSearchTool
+        >>> out = WebSearchTool()._run("example domain")
+        >>> isinstance(out, str)
+        True
+        >>> out.count("\\n") <= 2  # al massimo 3 risultati -> al massimo 2 newline
+        True
+        """
+        if not isinstance(search_query, str) or not search_query.strip():
+            raise ValueError("search_query must be a non-empty string.")
 
         with DDGS(verify=False) as ddgs:
             results = ddgs.text(

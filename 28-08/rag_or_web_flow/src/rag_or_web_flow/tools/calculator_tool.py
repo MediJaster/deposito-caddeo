@@ -28,7 +28,49 @@ class CalculatorTool(BaseTool):
         a: float,
         b: float,
     ) -> float:
-        """Use the tool synchronously."""
+        """
+        Esegue un'operazione aritmetica elementare su due operandi.
+
+        Parameters
+        ----------
+        calculation : {"addition", "subtraction", "multiplication", "division"}
+            Tipo di operazione da eseguire.
+        a : float
+            Primo operando. Unità: adimensionale. Range: qualsiasi numero reale finito.
+        b : float
+            Secondo operando. Unità: adimensionale. Range: qualsiasi numero reale finito
+            (per "division" deve essere diverso da 0).
+
+        Returns
+        -------
+        float
+            Esito dell'operazione. Unità: adimensionale.
+
+        Raises
+        ------
+        ValueError
+            Se `calculation` non è supportato.
+        ValueError
+            Se `calculation == "division"` e `b == 0`.
+
+        Notes
+        -----
+        Complessità temporale: O(1).
+        Complessità spaziale: O(1).
+
+        Examples
+        --------
+        >>> from rag_or_web_flow.tools.calculator_tool import CalculatorTool
+        >>> tool = CalculatorTool()
+        >>> tool._run("addition", 2.5, 3.5)
+        6.0
+        >>> tool._run("subtraction", 10.0, 4.0)
+        6.0
+        >>> tool._run("multiplication", 3.0, 2.0)
+        6.0
+        >>> tool._run("division", 12.0, 2.0)
+        6.0
+        """
 
         match calculation:
             case "addition":

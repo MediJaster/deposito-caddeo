@@ -17,6 +17,41 @@ class RetrievalToolInput(BaseModel):
 
 
 def get_embedding_model() -> AzureOpenAIEmbeddings:
+    """
+    Restituisce il modello di embedding Azure OpenAI configurato via variabili d'ambiente.
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    AzureOpenAIEmbeddings
+        Istanza configurata con `AZURE_API_BASE`, `AZURE_API_KEY`, `AZURE_API_VERSION`.
+
+    Raises
+    ------
+    ValueError
+        Se una tra `AZURE_API_BASE`, `AZURE_API_KEY`, `AZURE_API_VERSION` non è impostata.
+
+    Notes
+    -----
+    Complessità temporale: O(1).
+    Complessità spaziale: O(1).
+
+    Examples
+    --------
+    >>> import os
+    >>> from rag_or_web_flow.tools.rag_tool import get_embedding_model
+    >>> saved = {k: os.environ.pop(k, None) for k in ("AZURE_API_BASE","AZURE_API_KEY","AZURE_API_VERSION")}
+    >>> try:
+    ...     get_embedding_model()
+    ... except ValueError as e:
+    ...     "AZURE_API_BASE" in str(e) or "AZURE_API_KEY" in str(e) or "AZURE_API_VERSION" in str(e)
+    ... finally:
+    ...     _ = [os.environ.__setitem__(k, v) for k, v in saved.items() if v is not None]
+    True
+    """
     endpoint_url = os.getenv("AZURE_API_BASE")
     api_key = os.getenv("AZURE_API_KEY")
     api_version = os.getenv("AZURE_API_VERSION")
@@ -59,6 +94,43 @@ class RetrievalTool(BaseTool):
     args_schema: Type[BaseModel] = RetrievalToolInput
 
     def _run(self, query: str) -> str:
+        """
+        Esegue una ricerca di similarità su Qdrant e restituisce i contenuti dei documenti.
+
+        Parameters
+        ----------
+        query : str
+            Query da cercare nella collezione Qdrant. Unità: adimensionale.
+            Range: stringa non vuota.
+
+        Returns
+        -------
+        str
+            Concatenazione dei contenuti dei documenti trovati, separati da "---".
+            Unità: adimensionale.
+
+        Raises
+        ------
+        ValueError
+            Se `query` è vuota o composta solo da spazi.
+        ValueError
+            Se le variabili d'ambiente richieste da `get_embedding_model` non sono impostate.
+
+        Notes
+        -----
+        Complessità temporale: O(k) con k = numero di documenti richiesti (qui k = 5).
+        Complessità spaziale: O(k).
+
+        Examples
+        --------
+        >>> from rag_or_web_flow.tools.rag_tool import RetrievalTool
+        >>> # L'esempio richiede un'istanza Qdrant raggiungibile e le variabili d'ambiente settate.
+        >>> isinstance(RetrievalTool()._run("test"), str)  # doctest: +SKIP
+        True
+        """
+        if not isinstance(query, str) or not query.strip():
+            raise ValueError("query must be a non-empty string.")
+
         with get_qdrant_vectorstore() as qdrant:
             result = qdrant.similarity_search(query, k=5)
 
